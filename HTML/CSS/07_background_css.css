@@ -1,0 +1,166 @@
+/* 배경색과 배경범위 지정하기 */
+/* background-color : 색 지정 */
+/* background-clip : 배경지정 범위 지정 */
+.box{
+    width: 200px;
+    height: 200px;
+    border: 10px dotted black;
+    padding: 30px;
+    margin: 20px;
+}
+#clip-border{
+    background-color: green;
+    background-clip: border-box;
+}
+#clip-padding{
+    background-color: yellow;
+    background-clip: padding-box;
+}
+#clip-content{
+    background-color: lightblue;
+    background-clip: content-box;
+}
+
+/* 배경 이미지 지정 */
+/* background-image : url(파일경로) */
+/* background-repeat : 배경 이미지 반복 여부와 방향 지정 
+     repeat / repeat-x / repeat-y / no-repeat */
+
+#bg-image{
+    width: 100%;
+    height: 100px;
+    background-image: url('../images/07_images/dot.png');
+    background-repeat: repeat;
+}
+
+/* 배경의 위치 지정 */
+/* background-position : 반복 안하고 위치 지정
+    <수평위치> <수직위치>
+    수평위치 : left center right % px
+    수직위치 : top center bottom % px */
+/* background-origin : 배치 기준 지정
+    border-box / padding-box / content-box */
+
+#bg-position{
+    width: 200px;
+    height: 200px;
+    background-image: url('../images/07_images/dot.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    border: 1px solid black;
+}
+#origin1{
+    width: 200px;
+    height: 200px;
+    padding: 10px;
+    margin: 10px;
+    background-image: url('../images/07_images/dot.png');
+    background-repeat: no-repeat;
+    border: 5px dotted black;
+    background-origin: padding-box;
+}
+#origin2{
+    width: 200px;
+    height: 200px;
+    padding: 10px;
+    margin: 10px;
+    background-image: url('../images/07_images/dot.png');
+    background-repeat: no-repeat;
+    border: 5px dotted black;
+    background-origin: border-box;
+}
+#origin3{
+    width: 200px;
+    height: 200px;
+    padding: 10px;
+    margin: 10px;
+    background-image: url('../images/07_images/dot.png');
+    background-repeat: no-repeat;
+    border: 5px dotted black;
+    background-origin: content-box;
+}
+
+body{
+    background-image: url('../images/07_images/cafe.gif');
+    background-repeat: no-repeat;
+    /* background-attachment: fixed; */
+}
+
+#bg{
+    background: url('../images/07_images/dot.png') no-repeat center bottom scroll;
+    width: 100px;
+    height: 100px;
+    border: 10px solid yellow;
+}
+
+/* background-size : 배경 크기 지정 */
+.bgbox{
+    width: 300px;
+    height: 300px;
+    border: 1px solid black;
+    margin: 20px;
+    background: url('../images/07_images/dot.png') no-repeat left top;
+}
+/* auto : 사진 그대로 */
+#bg1{background-size: auto;}
+/* 200px : 가로 200px 세로 비율 맞춤 */
+#bg2{background-size: 200px;}
+/* 가로 50% 세로 비율 */
+#bg3{background-size: 50%;}
+/* 가로 세로 100% */
+#bg4{background-size: 100% 100%;}
+/* contain : 요소안에 배경 이미지가 다 보이도록 표시 */
+#bg5{background-size: contain;}
+/* cover : 배경 세로 높이에 맞추어 비율로 요소를 완전히 덮도록 */
+#bg6{background-size: cover;}
+
+/* 그라데이션 */
+/* linear-gradient : 선형 그라데이션
+    to 방향 또는 각도 , 색상 중지점 [, 색상 중지점, 색상 중지점] */
+#lg1{
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(to right bottom, blue, white);
+}
+#lg2{
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(45deg, red, white);
+}
+#lg3{
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(to bottom, blue, white 30%, blue);
+}
+
+/* 원형 그라데이션 */
+/* radial-gradient : 원형 그라데이션 */
+
+#rg1{
+    width: 500px;
+    height: 300px;
+    background: radial-gradient(ellipse, white, yellow, red);
+}
+#rg2{
+    width: 500px;
+    height: 300px;
+    background: radial-gradient(circle, white, yellow, red);
+}
+#rgs1{
+    width: 500px;
+    height: 300px;
+    background: radial-gradient(circle closest-side at 30% 40%, white, yellow, green);
+}
+#rgs2{
+    width: 500px;
+    height: 300px;
+    background: radial-gradient(circle closest-corner at 30% 40%, white, yellow, green);
+}
+
+/* 그라데이션 패턴 만들기 */
+/* repeating-linear */
+#rlg1{
+    width: 500px;
+    height: 300px;
+    background: repeating-linear-gradient(yellow, yellow 30px, red 30px, red 60px);
+}

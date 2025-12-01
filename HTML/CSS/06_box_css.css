@@ -1,0 +1,158 @@
+/* Box 모델 관련 속성 */
+/* width 속성 : 가로 넓이 */
+/* height 속성 : 세로 높이 */
+/* box-sizing 속성 : width와 height를 어느 영역까지 설정할지 정함
+         border-box , content-box */
+/* box-shadow 속성 : 요소의 box에 그림자 추가
+     <수평거리> <수직거리> <흐림정도> <번짐정도> <색상> inset/outset */
+
+.box1{
+    width: 400px;
+    height: 150px;
+
+    border: 10px solid black;
+    box-sizing: border-box;
+
+    box-shadow: yellow 18px 10px 7px 15px;;
+}
+.box2{
+    width: 90%;
+    height: 200px;
+}
+
+/* 테두리 관련 속성 */
+/* border-style 속성 : 테두리의 선 종류를 지정 
+      solid, dotted, dashed, double*/
+/* border-width 속성 : 테두리의 두께를 지정
+     px단위의 크기 / thin / medium / thick 
+    속성값은 top > right > bottom > left 순서로 지정된다.
+    적히지 않은 값은 마주보는 값이 설정된다*/
+/* border-color 속성 : 테두리의 색상 지정 */
+/* border 속성 :두께, 선, 종류, 색상을 한번에 지정 
+     ** border는 border-top / border-bottom / border-right / border-left를 사용해서 따로 지정*/
+/* border-radius 속성 : 테두리 모서리 라운드 설정, px 또는 %로 설정 */
+
+.size{
+    width: 150px;
+    height: 150px;
+}
+.border1{
+    border-width: 2px;
+    border-style: dotted;
+    border-color: red;
+}
+.border2{
+    border-width: 5px 10px;
+    border-style: dashed;
+    border-color: blue;
+}
+.border3{
+    border-width: 1px 5px 10px;
+    border-style: solid;
+    border-color: green;
+}
+.border4{
+    /* border: 10px dotted orange; */
+    border-bottom: 10px dotted orange;
+}
+.border5{
+    border: 2px solid black;
+    border-radius: 10px;
+}
+.border6{
+    border: 2px solid black;
+    /* border-radius: 50%; */
+border-bottom-left-radius: 50%;
+border-top-left-radius: 50%;
+}
+
+/* 여백을 조정하는 속성 */
+/* margin 속성 : 요소와 요소 사이의 여백을 조절할 때 사용 (테두리 바깥쪽 여백) */
+/* padding 속성 : 테두리와 컨텐츠 사이의 여백을 조정 (테두리 안쪽) */
+
+.margin1{
+    border: 1px solid black;
+    margin: 10px;
+}
+.margin2{
+    border: 1px solid black;
+    margin: 20px 10px;
+}
+.margin3{
+    border: 1px solid black;
+    margin: 30px 20px 10px;
+}
+.margin4{
+    border: 1px solid black;
+    margin: 40px 30px 20px 10px;
+}
+.margin5{
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    margin: 0 auto;
+}
+.padding{
+    border: 1px solid green;
+    padding: 10px;
+}
+
+/* 웹 요소 배치 방법 바꾸기 */
+/* display 속성 : 블록레벨 > 인라인레벨 / 인라인레벨 >블록레벨 */
+#menu{list-style: none;}
+.menulist{
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    margin: 10px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+/* float 속성 : 요소를 왼쪽이나 오른쪽에 떠 있게 배치한다. */
+/* clear 속성 : float 해제 */
+.float{
+    background: green;
+    float: right;
+}
+.clear{
+    clear: right;
+}
+
+/* 웹 요소를 이동하는 속성 */
+/* 위치조절 속성 : top, bottom, left, right */
+/* position 속성 : 웹 요소 배치
+      static : 위치 조절 불가
+      relative : 위치 조절 가능
+      absolute : 부모 태그 기준 위치 조절
+      fixed : 항상 그 자리 위치 */
+
+#static{position: static;}
+#relative1{position: relative;}
+#relative2{
+    position: relative;
+    left: 100px;
+    top: -50px;
+}
+#fixed{
+    position: fixed;
+    right: 30px;
+    top: 30px;
+}
+.pbox{
+    background: gray;
+    border: 1px solid yellow;
+}
+#parent{
+    width: 800px;
+    height: 500px;
+    background: black;
+    position: relative;
+}
+#absolute{
+    color: white;
+    position: absolute;
+    right: 300px;
+    bottom: 200px;
+}

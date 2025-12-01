@@ -1,0 +1,43 @@
+table, th, td{
+    font-family: 'malgun godic';
+    border: 1px solid black;
+    caption-side: bottom;
+    border-spacing: 10px 20px;
+    border-collapse: collapse;
+    padding: 10px;
+}
+td{
+    text-align: right;
+}
+caption{
+    text-align: right;
+}
+/* 여기까지 table 연습 */
+
+img{
+    width: 100%;
+    height: 200px;
+}
+h1{
+    font-size: 3em;
+    color: red;
+    text-align: center;
+    
+}
+h2{
+    font-size: 1.5em;
+    text-align: center;
+    color: blue;
+}
+p{
+    font-size: 1.2em;
+    line-height: 2em;
+    text-align: center;
+    font-weight: bold;
+}
+span{
+    color: green;
+}
+#smalltext{
+    font-size: 0.7em;
+}

@@ -1,0 +1,172 @@
+/* flex layout 용어 */
+/* flex container : 플렉스 박스 레이아웃을 적용할 대상을 묶는 요소 */
+/* 플렉스 항목 : 플렉스 박스 레이아웃을 적용할 대상 */
+/* 주축 : 플렉스 항목을 배치하는 기본 방향, 기본은 가로(왼->오) */
+/* 교차축 : 주축과 교차하는 방향, 주축  반대, 기본 세로(위->아래) */
+
+/* 플렉스 레이아웃 만드는 순서 */
+/* 1. 플렉스 컨테이너(부모 태그)를 지정 */
+/* 2. 플렉스 컨테이너 안에 플렉스 항목(자식 태그)을 작성 */
+/* 3. 주축 지정 -> 교차축 자동 지정 (flex-direction 속성) */
+
+.fdcon{
+    display : flex;
+    background-color: #eee;
+    border: 1px solid black;
+    margin-bottom: 30px;
+    width: 700px;
+}
+.fdbox{
+    padding: 5px 45px;
+    margin: 5px;
+    width: 80px;
+}
+.fdbox:nth-child(odd){
+    background-color: orange;
+}
+.fdbox:nth-child(even){
+    background-color: green;
+}
+#fd1{flex-direction: row;}
+#fd2{flex-direction: row-reverse;}
+#fd3{flex-direction: column;}
+#fd4{flex-direction: column-reverse;}
+
+/* flex-wrap 속성 : 플렉스 항목 줄 배치 지정 */
+/* flex-flow 속성 : 방향과 배치를 한번에 */
+.fwcon{
+    display: flex;
+    background-color: #eee;
+    border: 1px solid black;
+    margin-bottom: 30px;
+}
+#opt1{flex-wrap: wrap;}
+#opt2{flex-wrap: nowrap;}
+#opt3{flex-flow: row wrap-reverse;}
+
+/* justify-content 속성 : 주축의 항목 배치 방법 지정 */
+#start{justify-content: flex-start;}
+#end{justify-content: end;}
+#center{justify-content: center;}
+#between{justify-content: space-between;}
+#around{justify-content: space-around;}
+#evenly{justify-content: space-evenly;}
+
+/* margin 이용 주축 배치 */
+#msatrt{
+    justify-content: flex-start;
+}
+#mright{
+    margin-right: auto;
+}
+
+/* align-items 속성 : 플렉스 항목들 교차측 배치 지정 */
+.aicon{
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: flex-start;
+    background-color: #eee;
+    border: 1px solid black;
+    margin-bottom: 20px;
+}
+#ai1{align-items: flex-start;}
+#ai2{align-items: flex-end;}
+#ai3{align-items: center;}
+#ai4{align-items: baseline;}
+#ai5{align-items: stretch;}
+
+/* align-self 속성 : 특정 항목만 교차축 배치 다르게 지정 */
+#as1{align-self: auto;}
+#as2{align-self: flex-start;}
+#as3{align-self: flex-end;}
+#as4{align-self: baseline;}
+#as5{align-self: center;}
+#as6{align-self: stretch;}
+
+/* align-content 속성 : 플렉스 항목이 여러줄일 경우 항목의 줄을 배치하는 방법 */
+.accon{
+    width: 400px;
+    height: 400px;
+    display: flex;
+    flex-flow: row wrap;
+    border: 1px solid black;
+    background-color: #eee;
+    margin-bottom: 30px;
+}
+#ac1{align-content: flex-start;}
+#ac2{align-content: flex-end;}
+#ac3{align-content: center;}
+#ac4{align-content: space-between;}
+#ac5{align-content: space-around;}
+#ac6{align-content: stretch;}
+
+/* gap 속성 :  항목 사이 간격 지정 */
+.gapcon{
+    width: 700px;
+    height: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+    border: 1px solid black;
+    gap: 20px;
+}
+.gapbox{
+    padding: 10px;
+    width: 80px;
+    background: yellow;
+}
+
+/* flex-basis 속성 : 플렉스 항목 기본크기 지정 */
+.fbcon{
+    width: 800px;
+    display: flex;
+    border: 1px solid black;
+    background-color: #eee;
+    gap: 30px;
+}
+.fbbox{
+    background-color: black;
+    flex-basis: 150px;
+    color: white;font-size: 2rem;
+}
+
+/* flex-grow : 플렉스 남는 공간 나누는 방법 */
+.fgcon{
+    width: 800px;
+    height: 100px;
+    display: flex;
+    border: 1px solid black;
+    gap: 10px;
+}
+.fgbox{
+    flex-basis: 150px;
+}
+.fgbox:nth-child(odd){background-color: orange;}
+.fgbox:nth-child(even){background-color: green;}
+
+#fg1{flex-grow: 1;}
+#fg2{flex-grow: 1;}
+#fg3{flex-grow: 0;}
+#fg4{flex-grow: 2;}
+
+/* flex-shrink 속성 : 플렉스 컨테이너의 크기가 항목들의 크기보다 작을 때 항목이 얼마나 줄어들지 지정 */
+.fscon{
+    width: 800px;
+    height: 100px;
+    display: flex;
+    border: 1px solid black;
+    gap: 10px;
+}
+.fsbox{
+    flex-basis: 300px;
+}
+.fsbox:nth-child(odd){background-color: orange;}
+.fsbox:nth-child(even){background-color: green;}
+
+#fs1{flex-shrink: 1;}
+#fs2{flex-shrink: 0;}
+#fs3{flex-shrink: 1;}
+#fs4{flex-shrink: 2;}

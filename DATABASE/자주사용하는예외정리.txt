@@ -1,0 +1,43 @@
+예외 이름			예외번호			설명
+
+ACCESS_INTO_NULL		ORA-06530 : -6530		초기화되지 않은 객체 속성 값 할당
+
+CASE_NOT_FOUND		ORA-06592 : -6592		CASE문의 WHERE절에 조건이 없고 ELSE절도 없을 경우
+
+COLLECTION_IS_NULL	ORA-06531 : -6531		초기화되지 않은 중첩 테이블
+
+CURSOR_ALREADY_OPEN	ORA-06511 : -6511		이미 OPEN된 커서를 OPEN 시도할 경우
+
+DUP_VAL_ON_INDEX	ORA-00001 : -1		UNIQUE 인덱스가 있는 열에 중복된 값을 저장하려고 할 경우
+
+INVALID_CURSOR		ORA-01001 : -1001		OPEN되지 않은 커서를 CLOSE 시도하는 것과 같이 잘못된 커서 작업을 시도하는 경우
+
+INVALID_NUMBER		ORA-01722 : -1722		문자에서 숫자로의 변환이 실패했을 경우
+
+LOGIN_DENIED		ORA-01017 : -1017		사용자 이름이나 패스워드가 올바르지 않은 상태에서 로그인 시도할 경우
+
+NO_DATA_FOUND		ORA-01403 : +100		SELECT INTO문에서 결과 행이 하나도 없을 경우
+
+NOT_LOGGED_ON		ORA-01012 : -1012		데이터베이스에 접속되어 있지 않은 경우
+
+PROGRAM_ERROR		ORA-06501 : -6501		PL/SQL 내부 오류가 발생했을 경우
+
+ROWTYPE_MISMATCH	ORA-06504 : -6504		호스트 커서 변수와 PL/SQL커서 변수의 자료형이 호환되지 않을 경우
+
+SELF_IS_NULL		ORA-30625 : -30625		초기화되지 않은 오브젝트의 MEMBER 메서드를 호출한 경우
+
+STORAGE_ERROR		ORA-06500 : -6500		PL/SQL메모리가 부족하거나 문제가 발생할 경우
+
+SUBSCRIPT_BEYOND_COUNT	ORA-06533 : -6533		컬렉션의 요소 수보다 큰 인덱스를 사용하여중첩 테이블이나 VARRAY 요소 참조를 시도할 경우
+
+SUBSCRIPT_OUTSIDE_LIMIT	ORA-06532 : -6532		정상 범위 외 인덱스 번호를 사용하여 중첩테이블이나 VARRAY요소 참조를 시도할 경우
+
+SYS_INVALID_ROWID	ORA-01410 : -1410		문자열을 ROWID로 변환할 때 값이 적절하지 않은 경우
+
+TIMEOUT_ON_RESOURCE	ORA-00051 : -51		자원 대기 시간을 초과했을 경우
+
+TOO_MANY_ROWS		ORA-01422 : -1422		SELECT INTO문의 결과 행이 여러 개일 경우
+
+VALUE_ERROR		ORA-06502 : -6502		산술,변환,잘림,제약 조건 오류가 발생했을 경우
+
+ZERO_DIVIDE		ORA-01476 : -1476		숫자 데이터를 0으로 나누려고 했을 경우

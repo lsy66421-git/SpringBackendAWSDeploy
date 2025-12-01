@@ -1,0 +1,13 @@
+INSERT INTO MUSTHAVE.CAFE_MVCBOARD (IDX,NAME,TITLE,CONTENT,POSTDATE,OFILE,SFILE,DOWNCOUNT,PASS,VISITCOUNT) VALUES
+	 (216,'이순영','카페 공지사항 1','카페 공지사항 글쓰기 테스트 입니다. 수정테스트.',TIMESTAMP'2025-11-26 10:47:50','img_place_01.jpg','20251126_104750199.jpg',1,'1111',2),
+	 (222,'홍길동','게시판글쓰기 3','게시판글쓰기 3',TIMESTAMP'2025-11-26 14:16:21',NULL,NULL,0,'1111',0),
+	 (220,'홍길동','게시판글쓰기 1','게시판글쓰기 1',TIMESTAMP'2025-11-26 14:15:50',NULL,NULL,0,'1111',0),
+	 (221,'홍길동','게시판글쓰기 2','게시판글쓰기 2',TIMESTAMP'2025-11-26 14:16:08',NULL,NULL,0,'1111',0),
+	 (223,'홍길동','게시판글쓰기 4','게시판글쓰기 4',TIMESTAMP'2025-11-26 14:16:35',NULL,NULL,0,'1111',0),
+	 (224,'Administrator','게시판글쓰기 5','게시판글쓰기 5',TIMESTAMP'2025-11-26 14:17:06',NULL,NULL,0,'1111',0),
+	 (225,'Administrator','게시판글쓰기 6','게시판글쓰기 6',TIMESTAMP'2025-11-26 14:17:20',NULL,NULL,0,'1111',0),
+	 (226,'Administrator','게시판글쓰기 7','게시판글쓰기 7',TIMESTAMP'2025-11-26 14:17:45',NULL,NULL,0,'1111',0),
+	 (227,'Administrator','게시판글쓰기 8','게시판글쓰기 8',TIMESTAMP'2025-11-26 14:17:59',NULL,NULL,0,'1111',0),
+	 (228,'Administrator','게시판글쓰기 9','게시판글쓰기 9',TIMESTAMP'2025-11-26 14:18:11',NULL,NULL,0,'1111',0);
+INSERT INTO MUSTHAVE.CAFE_MVCBOARD (IDX,NAME,TITLE,CONTENT,POSTDATE,OFILE,SFILE,DOWNCOUNT,PASS,VISITCOUNT) VALUES
+	 (217,'수정','카페 공지사항 2','카페 공지사항 글쓰기 테스트 입니다.',TIMESTAMP'2025-11-26 10:49:41','img_place_08.jpg','20251126_104941877.jpg',0,'1111',5);

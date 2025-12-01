@@ -1,0 +1,368 @@
+/* 기본 스타일 리셋 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 전체적인 폰트 및 배경색 설정 */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #fdfaf6; /* 이미지에서 사용된 베이지 배경색 */
+    color: #333;
+    line-height: 1.6;
+    width: 100%; /* 보이는 화면 가로 전체 */
+    margin: 0 auto; /* 중앙 정렬 */ 
+}
+
+/* 링크 기본 스타일 */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* --- 헤더 --- */
+header {
+    width: 100%;
+    padding: 20px 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.header-container {
+    display: flex; /* Flexbox 레이아웃 사용 */
+    justify-content: space-between; /* 요소들 끝으로 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    flex-wrap: wrap; /* 추가: 공간이 부족하면 자동으로 줄바꿈 */
+    gap: 20px; /* 추가: 요소들 사이의 최소 간격 */
+}
+
+/* 로고 스타일 */
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    flex-grow: 1; /* 남는 공간을 모두 차지하도록 설정 */
+}
+
+
+/* 유틸리티 네비게이션 (로그인/회원가입) */
+.util-nav a {
+    margin-left: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* --- 메인 콘텐츠 --- */
+main {
+    padding: 0 0px;
+}
+
+/* 상품 그룹 및 메인 이미지 설정 */
+.banne_image {
+    display: flex; /* flexbox로 변경 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    background: url(./images/main_image.png) no-repeat center;
+    background-size: cover;
+    height: 500px; /* 매우 중요: 부모 컨테이너에 기준이 될 높이를 지정. 원하는 값으로 조절. */
+}
+
+/* 메인 네비게이션 (메인 페이지 전용) */
+.banne-nav {
+    display: flex; /* Flexbox 레이아웃 사용 */
+    justify-content: space-between; /* 요소들 사이에 공간을 균등하게 배분 */
+    align-items: center; /* 수직 중앙 정렬 */
+    flex-wrap: wrap; /* 추가: 공간이 부족하면 자동으로 줄바꿈 */
+    padding: 5px 0; /* 상하 여백 늘림 */
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+}
+
+.banne-nav a {
+    margin: 0 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.banne_image h2 {
+    color: white; /* 배경이 어두우므로 글자색을 흰색으로 변경 */
+    font-size: 3em; /* 글자 크기 키움 (원하는 대로 조절) */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트 그림자 추가 */
+    
+    /* 불필요한 padding, margin 속성 모두 제거 */
+    /* padding-block-start: 1em;
+    padding-block-end: 0em;
+    padding-inline-start: 500px;
+    padding-inline-end: 0px;
+    font-weight: bold; */
+}
+
+/* 상품 목록 섹션 (메인 페이지) */
+.products {
+    padding: 30px 0;
+    width: auto;
+}
+
+.product-category {
+    display: flex; /* Flexbox 컨테이너로 지정 */
+    flex-direction: column; /* 자식 요소들을 세로(위에서 아래로)로 배치 */ 
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.product-category h2 {
+    font-size: 28px;
+    flex-shrink: 0; /* 공간이 부족해도 줄어들지 않도록 설정 */
+}
+
+.product-category p {
+    font-size: 14px;
+    color: #777;
+    flex-shrink: 0; /* 공간이 부족해도 줄어들지 않도록 설정 */
+}
+
+.product-image {
+    display: flex; /* 자식 요소들을 가로로 배치하기 위해 flex 사용 */
+    justify-content: flex-start; /* 왼쪽부터 차례로 정렬 */
+    gap: 10px; /* 이미지들 사이의 간격을 20px로 설정. */
+    padding: 0 4px; /* 섹션 좌우에 약간의 여백. */
+    align-items: stretch; /* 자식 요소들이 교차 축(세로)을 꽉 채우도록 함 */
+    flex-wrap: wrap; /* 공간이 부족하면 자식 요소(.img-wrapper)들이 다음 줄로 넘어가도록 허용합니다. */
+}
+
+.img-wrapper {
+    width: calc(25% - 7.5px); /* gap의 크기를 고려하여 너비를 정확하게 계산 */
+    /* height: 100%;  /* 부모(.product-image)의 높이를 그대로 물려받음 */
+    display: flex;
+    flex-direction: column;
+}
+
+.img-wrapper img {
+    width: 100%;
+    aspect-ratio: 1 / 1.2;  /* 이미지의 가로세로 비율을 1:1.2로 고정하여 모든 이미지의 형태를 통일 */
+    object-fit: cover; /* 비율을 유지하면서 공간을 가득. */
+    display: block; /* 이미지 아래에 생길 수 있는 미세한 여백을 제거. */
+}
+
+.img-wrapper p {
+    padding: 5px 5px; /* 텍스트 좌우, 상하 여백 */
+    font-size: 15px; /* 폰트 크기 */
+    color: #333; /* 폰트 색상 */
+    line-height: 1.0; /* 줄 간격 */
+    text-align: center; /* 텍스트 왼쪽 정렬 */
+    flex-shrink: 0; /* 텍스트 영역이 줄어들지 않도록 설정 */
+}
+
+/* --- 폼 섹션 (로그인, 회원가입) --- */
+.form-section {
+    max-width: 700px;
+    margin: 50px auto; /* 위아래 50px, 좌우 자동(중앙 정렬) */
+    padding: 40px;
+}
+
+.form-section h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 40px;
+    letter-spacing: 2px; /* 글자 간격 */
+}
+
+/* 로그인 폼 */
+.login-form .input-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+.login-form .input-group input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+.login-form .input-group.with-icon input {
+    padding-left: 45px; /* 아이콘 공간 확보 */
+}
+/* 로그인 폼 아이콘 스타일 */
+.login-form .input-group::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.login-form .input-group:nth-of-type(1)::before {
+    background-image: url('images/icon_user.png');
+}
+.login-form .input-group:nth-of-type(2)::before {
+    background-image: url('images/icon_lock.png');
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 30px;
+    color: #666;
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}
+.signup-link a {
+    font-weight: bold;
+    color: #333;
+    text-decoration: underline;
+}
+
+/* 회원가입 폼 */
+.register-form fieldset {
+    border: none;
+    border-top: 2px solid #333;
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+.register-form legend {
+    font-size: 18px;
+    font-weight: bold;
+    padding-right: 10px;
+}
+.register-form .required {
+    color: #ff0000;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.auth-type {
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #fafafa;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+.auth-type label {
+    margin-right: 20px;
+}
+.form-notice {
+    font-size: 14px;
+    color: #888;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+.input-row label:first-child {
+    width: 120px; /* 라벨 너비 고정 */
+    font-weight: 500;
+}
+.input-row input[type="text"],
+.input-row input[type="password"],
+.input-row input[type="email"],
+.input-row input[type="date"] {
+    flex-grow: 1; /* 남은 공간을 모두 차지 */
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+.input-row .btn-check {
+    padding: 8px 15px;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* 공통 버튼 스타일 */
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #c8bcae; /* 이미지의 버튼 색상 */
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* --- 푸터 --- */
+footer {
+    border-top: 1px solid #eee;
+    padding: 30px;
+    margin-top: 0px;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-logo {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.footer-info p {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.copyright {
+    margin-top: 15px;
+    color: #aaa;
+}
+
+.social-links a {
+    margin-left: 10px;
+}
+
+.social-links img {
+    width: 50px;
+    height: 50px;
+}
+
+/* =================================== */
+/* 반응형 웹 스타일           */
+/* =================================== */
+
+/* 화면 가로 크기가 1024px 이하일 때 (태블릿 등) */
+@media (max-width: 1024px) {
+    .img-wrapper {
+        /* 한 줄에 2개씩 보이도록 너비를 50%에 가깝게 조정 (gap 고려) */
+        width: calc(50% - 5px); 
+    }
+}
+
+/* 화면 가로 크기가 768px 이하일 때 (모바일 등) */
+@media (max-width: 768px) {
+    /* 헤더와 네비게이션 정렬 방식 변경 */
+    .header-container, .banne-nav {
+        flex-direction: column; /* 세로로 쌓이도록 변경 */
+        gap: 15px;
+    }
+
+    .img-wrapper {
+        /* 한 줄에 1개씩 보이도록 너비를 100%로 설정 */
+        width: 100%;
+    }
+
+    /* 푸터도 세로로 쌓이도록 변경 */
+    .footer-container {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+}

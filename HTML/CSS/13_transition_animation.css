@@ -1,0 +1,146 @@
+.transcon{
+    width: 800px;
+    height: 200px;
+    margin: 20px auto;
+}
+.origin{
+    width: 100px;
+    height: 100px;
+    border: 1px solid black;
+    margin: 40px;
+    display: inline-block;
+}
+.origin > div {
+    width: 100px;
+    height: 100px;
+    background-color: orange;
+    transition: 0.5s;
+}
+#movex:hover{transform: translateX(50px);}
+#movey:hover{transform: translateY(50px);}
+#movexy:hover{transform: translate(50px, 50PX);}
+#scalex:hover{transform: scaleX(2);}
+#scaley:hover{transform: scaleY(1.5);}
+#scalexy:hover{transform: scale(0.7, 2);}
+
+/* rotate 함수 */
+#rotate1:hover{transform: rotate(40deg);}
+#rotate2:hover{transform: rotate(-40deg);}
+
+/* perspective 속성 : 원근감 */
+.pers{
+    width: 100px;
+    height: 100px;
+    margin: 40px;
+    display: inline-block;
+    border: 1px solid black;
+    perspective: 200px;
+}
+.pers > div {
+    width: 100px;
+    height: 100px;
+    background-color: orange;
+    transition: all 0.5s;
+}
+#rotatex:hover{transform: rotateX(55deg);}
+#rotatey:hover{transform: rotateY(55deg);}
+#rotatez:hover{transform: rotateZ(55deg);}
+#rotatexyz:hover{transform: rotate3d(2.5, 1.2, -1.5, 55deg);}
+
+/* skew 함수 : 지정한 각도 만큼 요소를 비튼다. */
+#skewx:hover{transform: skewX(30deg);}
+#skewy:hover{transform: skewY(15deg);}
+#skewxy:hover{transform: skew(-25deg, -15deg);}
+
+/* transition 속성 : 요소를 변경할 때 자연스럽게 변경 */
+/* transition-property 속성 : 변경 속성 지정 */
+/* transition-duration */
+/* trasition-tinming-function */
+/* transition-delay */
+/* transition : 4가지 속성 한번에 */
+.wrap{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    height: 600px;
+}
+.wrap div{
+    width: 100px;
+    height: 50px;
+    background-color: blue;
+    color: white;
+}
+.wrap:hover div{
+    height: 500px;
+}
+.wrap:hover #ease{
+    transition-property: height;
+    transition-duration: 3s;
+    transition-timing-function: ease;
+}
+.wrap:hover #linear{
+    transition-property: height;
+    transition-duration: 3s;
+    transition-timing-function: linear;
+}
+.wrap:hover #ease-in{
+    transition: height 3s ease-in;
+}
+.wrap:hover #ease-out{
+    transition: height 3s ease-out;
+}
+.wrap:hover #ease-in-out{
+    transition: height 3s ease-in-out;
+}
+
+/* animation 관련 속성 */
+/* @keyframes : 애니메이션을 정의하는 키워드 */
+/* animation-delay : 시작전 대기 시간 */
+/* animation-direction : 시작 방향 지정 */
+/* animation-duration : 진행 시간 */
+/* animation-iteration-count : 반복 횟수 지정 */
+/* animation-name : 정의한 이름 작성 */
+/* animation-timing-function : 진행 속도 */
+/* animation : 한번에 지정 */
+.anibox {
+    width: 100px;
+    height: 100px;
+    background-color: orange;
+    animation-name: slideRight;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    /* iteration-count 속성값
+         숫자 : 반복 횟수
+          infinite : 무한 반복*/
+    animation-direction: alternate;
+    /* direction 속성값
+         mormal : from ~ to로 진행
+         reverse : to ~ from
+         alternate : 홀수 번째 normal, 짝수 번째 reverse
+         alternate-reverse */
+}
+
+    @keyframes slideRight{
+        from{transform: translateX(0);}
+        to{transform: translateX(500px);}
+}
+
+    .anibox2 {
+        width: 100px;
+        height: 100px;
+        margin: 60px auto;
+        border: 1px solid black;
+        animation: rotateBox 2s infinite, changeBox 2s infinite;
+    }
+
+    @keyframes rotateBox{
+        0% {transform: rotateX(0deg) rotateY(0deg);}
+        50% {transform: rotateX(-180deg) rotateY(0deg);}
+        100% {transform: rotateX(-180deg) rotateY(-180deg);}
+    }
+
+    @keyframes changeBox{
+        0% {background-color: red;}
+        50% {background-color: green;}
+        100% {background-color: blue;}
+    }

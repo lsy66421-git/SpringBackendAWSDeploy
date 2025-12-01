@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.homework register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1 class="logo">
+                <a href="./1_main.html">YNCloth</a>
+            </h1>
+            <div class="util-nav">
+                <a href="./2_login.html">로그인</a>
+                <a href="./3_register.html">회원가입</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="banne_image">
+            <!-- <img src="./images/main_image.png" alt="Clothes Sale Banner"> -->
+            <h2>Big Sale 😍</h2>
+        </div>
+        
+        <section class="form-section">
+            <h2>REGISTER</h2>
+            <form action="#" method="post" class="register-form">
+                <fieldset>
+                    <a href="#">
+                        <legend>회원 인증</legend>
+                    </a>
+                    <div class="auth-type">
+                        <label><input type="radio" name="auth" checked> 개인회원</label>
+                        <label><input type="radio" name="auth"> 사업자회원</label>
+                        <label><input type="radio" name="auth"> 국내거주 외국인</label>
+                    </div>
+                    <p class="form-notice">■ 회원가입은 본인인증 후 가능하며, 본인인증 시 제공되는 정보는 해당 인증기관에서 직접 수집하며, 회원가입 외 다른 용도로 사용되지 않습니다. 타인의 정보를 도용하여 가입하는 경우, 서비스 이용이 제한되거나 법적 처벌을 받을 수 있습니다.</p>
+                </fieldset>
+                
+                <fieldset>
+                    <a href="#">
+                        <legend>가입 정보 <span class="required">필수</span></legend>
+                    </a>
+                    <div class="input-row">
+                        <label for="userid">아이디*</label>
+                        <input type="text" id="userid" required>
+                        <button type="button" class="btn-check">중복확인</button>
+                    </div>
+                    <div class="input-row">
+                        <label for="password">비밀번호*</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <div class="input-row">
+                        <label for="password_confirm">비밀번호 확인*</label>
+                        <input type="password" id="password_confirm" required>
+                    </div>
+                    <div class="input-row">
+                        <label for="name">이름*</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="input-row">
+                        <label for="address">주소*</label>
+                        <input type="text" id="address" required>
+                    </div>
+                    <div class="input-row">
+                        <label for="phone">연락처*</label>
+                        <input type="text" id="phone" placeholder="000-0000-0000" required>
+                    </div>
+                    <div class="input-row">
+                        <label>SMS수신*</label>
+                        <div>
+                            <label><input type="checkbox" required> 동의</label>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label for="email">이메일*</label>
+                        <input type="email" id="email" required>
+                        <button type="button" class="btn-check">중복확인</button>
+                    </div>
+                    <div class="input-row">
+                        <label>이메일수신*</label>
+                        <div>
+                            <label><input type="checkbox" required> 19세 수신동의</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <a href="#">
+                        <legend>추가 정보</legend>
+                    </a>
+                    <div class="input-row"><label>성별</label>
+                        <div><label><input type="radio" name="gender" checked> 남성</label><br>
+                            <label><input type="radio" name="gender"> 여성</label>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label for="birthdate">생년월일</label>
+                        <input type="date" id="birthdate">
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="btn-submit">회원가입</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h2 class="footer-logo">YoungyNeCloth</h2>
+                <p>주식회사 영이네클로스 | 대표: 이순영 | 주소: 부산특별시 OO구 OO로 123</p>
+                <p>사업자등록번호: 123-45-67890 | 통신판매업신고: 제2024-서울OO-1234호</p>
+                <p class="copyright">Copyright. YoungyNeCloth all rights reserved. Designed By Young.</p>
+            </div>
+            <div class="social-links">
+                <a href="https://www.instagram.com/" target="_blank"><img src="./images/instagram.png" alt="Instagram"></a>
+                <a href="https://www.facebook.com/?locale=ko_KR" target="_blank"><img src="./images/facebook.png" alt="Facebook"></a>
+                <a href="https://x.com/" target="_blank"><img src="./images/twiter.png" alt="X"></a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
