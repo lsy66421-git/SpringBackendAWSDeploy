@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cafe.mapper.MemberMapper">
+
+    <select id="findByUserid" resultType="com.cafe.entity.Member">
+        SELECT userid, pwd, name, email, phone, join_date AS regdate 
+        FROM CAFE_MEMBERS 
+        WHERE userid = #{userid}
+    </select>
+    
+    <insert id="insert" parameterType="com.cafe.entity.Member">
+        INSERT INTO CAFE_MEMBERS (userid, pwd, name, email, phone, join_date)
+        VALUES (#{userid}, #{pwd}, #{name}, #{email}, #{phone}, NOW())
+    </insert>
+    
+    <select id="checkUserid" resultType="int">
+        SELECT COUNT(*) FROM CAFE_MEMBERS WHERE userid = #{userid}
+    </select>
+
+</mapper>

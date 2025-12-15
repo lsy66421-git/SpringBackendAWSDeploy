@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cafe.mapper.MVCBoardMapper">
+
+    <select id="selectList" resultType="com.cafe.entity.MVCBoard">
+        SELECT * FROM CAFE_MVCBOARD
+        <where>
+            <if test="searchWord != null and searchWord != ''">
+                <choose>
+                    <when test="searchField == 'title'">
+                        AND title LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                    <when test="searchField == 'content'">
+                        AND content LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                    <otherwise>
+                        AND (title LIKE CONCAT('%', #{searchWord}, '%') OR content LIKE CONCAT('%', #{searchWord}, '%'))
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY idx DESC
+        LIMIT #{size} OFFSET #{start}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        SELECT COUNT(*) FROM CAFE_MVCBOARD
+        <where>
+            <if test="searchWord != null and searchWord != ''">
+                <choose>
+                    <when test="searchField == 'title'">
+                        AND title LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                    <when test="searchField == 'content'">
+                        AND content LIKE CONCAT('%', #{searchWord}, '%')
+                    </when>
+                    <otherwise>
+                         AND (title LIKE CONCAT('%', #{searchWord}, '%') OR content LIKE CONCAT('%', #{searchWord}, '%'))
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectById" resultType="com.cafe.entity.MVCBoard">
+        SELECT * FROM CAFE_MVCBOARD WHERE idx = #{idx}
+    </select>
+
+    <insert id="insert" parameterType="com.cafe.entity.MVCBoard">
+        INSERT INTO CAFE_MVCBOARD (name, title, content, pass, ofile, sfile, postdate, visitcount, downcount)
+        VALUES (#{name}, #{title}, #{content}, #{pass}, #{ofile}, #{sfile}, NOW(), 0, 0)
+    </insert>
+
+    <update id="update" parameterType="com.cafe.entity.MVCBoard">
+        UPDATE CAFE_MVCBOARD
+        SET name = #{name}, title = #{title}, content = #{content}, ofile = #{ofile}, sfile = #{sfile}
+        WHERE idx = #{idx}
+    </update>
+    
+    <update id="updateVisitCount">
+        UPDATE CAFE_MVCBOARD SET visitcount = visitcount + 1 WHERE idx = #{idx}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM CAFE_MVCBOARD WHERE idx = #{idx}
+    </delete>
+
+</mapper>

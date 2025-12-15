@@ -33,17 +33,6 @@ class TodoMapperTest {
         todoMapper.insert(vo);
     }
     @Test
-    void testInsert10() {
-        for (int i = 0; i < 50; i++) {
-            TodoVO vo = TodoVO.builder()
-                    .title("스프링 테스트 " + (i + 1))
-                    .dueDate(LocalDate.of(2025, 12, 12))
-                    .writer("user0" + (i % 10))
-                    .build();
-            todoMapper.insert(vo);
-        }
-    }
-    @Test
     void selectAll(){
         List<TodoVO> voList = todoMapper.selectAll();
         for(TodoVO vo : voList){
@@ -68,6 +57,7 @@ class TodoMapperTest {
         pageRequestDTO.setTypes(types);
         pageRequestDTO.setKeyword("1");
         todoMapper.selectSearch(pageRequestDTO);
+        todoMapper.getCount(pageRequestDTO);
     }
 }
 
