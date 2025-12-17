@@ -15,7 +15,7 @@
 
       <div style="width:90%; margin:auto;">
         <h2>게시판 - 글쓰기(Write)</h2>
-        <form action="${pageContext.request.contextPath}/board/write" method="post" name="writeFrm">
+        <form action="${pageContext.request.contextPath}/board/write" method="post" name="writeFrm" enctype="multipart/form-data">
           <table border="1" width="100%">
             <tr>
               <td>작성자</td>
@@ -38,11 +38,12 @@
               </td>
             </tr>
             <tr>
-              <td>비밀번호</td>
+              <td>첨부 파일</td>
               <td>
-                <input type="password" name="pass" style="width:100px;" required /> (수정/삭제 시 필요)
+                <input type="file" name="file" />
               </td>
             </tr>
+            <!-- Password field removed -->
             <tr>
               <td colspan="2" align="center">
                 <button type="submit">작성 완료</button>

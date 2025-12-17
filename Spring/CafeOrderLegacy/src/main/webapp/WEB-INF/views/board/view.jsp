@@ -49,7 +49,7 @@
                 <tr>
                     <td>첨부 파일</td>
                     <td colspan="3">
-                        <c:if test="${ not empty dto.ofile }">
+                        <c:if test="${ not empty dto.ofile and not empty dto.sfile }">
                             ${ dto.ofile }
                             <a
                                 href="${pageContext.request.contextPath}/download.do?ofile=${ dto.ofile }&sfile=${ dto.sfile }&idx=${ dto.idx }">
@@ -68,13 +68,14 @@
                 <!-- 하단 버튼 -->
                 <tr>
                     <td colspan="4" align="center">
-                        <c:if test="${ not empty loginUser }">
+                        <c:if
+                            test="${ not empty loginUser and (loginUser.userid eq 'admin' or loginUser.name eq dto.name) }">
                             <button type="button"
-                                onclick="location.href='${pageContext.request.contextPath}/board/pass?mode=edit&idx=${ dto.idx }';">
+                                onclick="if(confirm('수정하시겠습니까?')) location.href='${pageContext.request.contextPath}/board/edit?idx=${ dto.idx }';">
                                 수정하기
                             </button>
                             <button type="button"
-                                onclick="location.href='${pageContext.request.contextPath}/board/pass?mode=delete&idx=${ dto.idx }';">
+                                onclick="if(confirm('삭제하시겠습니까?')) location.href='${pageContext.request.contextPath}/board/delete?idx=${ dto.idx }';">
                                 삭제하기
                             </button>
                         </c:if>

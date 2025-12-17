@@ -30,7 +30,9 @@ public class MemberController {
         if (member != null) {
             if (member.getPwd().equals(pwd)) {
                 session.setAttribute("loginUser", member);
+                System.out.println(">>> [로그인 성공] 세션에 저장된 데이터: " + member);
                 return "redirect:/";
+
             }
         }
         model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
@@ -39,7 +41,10 @@ public class MemberController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
+        System.out.println(">>> [로그아웃 요청] 삭제 전 세션 데이터: " + session.getAttribute("loginUser"));
         session.invalidate();
+        System.out.println(">>> [로그아웃 완료] 세션이 무효화(삭제) 되었습니다.");
+
         return "redirect:/";
     }
 

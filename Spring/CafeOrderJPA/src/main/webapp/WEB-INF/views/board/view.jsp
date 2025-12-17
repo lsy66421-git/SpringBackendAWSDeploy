@@ -68,13 +68,13 @@
                 <!-- 하단 버튼 -->
                 <tr>
                     <td colspan="4" align="center">
-                        <c:if test="${ not empty loginUser }">
+                        <c:if test="${ not empty loginUser and (loginUser.name eq dto.name or loginUser.admin eq 1) }">
                             <button type="button"
-                                onclick="location.href='${pageContext.request.contextPath}/board/pass?mode=edit&idx=${ dto.idx }';">
+                                onclick="location.href='${pageContext.request.contextPath}/board/edit?idx=${ dto.idx }';">
                                 수정하기
                             </button>
                             <button type="button"
-                                onclick="location.href='${pageContext.request.contextPath}/board/pass?mode=delete&idx=${ dto.idx }';">
+                                onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='${pageContext.request.contextPath}/board/delete?idx=${ dto.idx }';">
                                 삭제하기
                             </button>
                         </c:if>

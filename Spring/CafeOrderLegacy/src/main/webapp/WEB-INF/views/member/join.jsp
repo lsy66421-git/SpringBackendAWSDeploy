@@ -3,8 +3,8 @@
 
         <h2>Join Member</h2>
 
-        <form action="CafeServlet" method="post" style="max-width: 500px; margin: 0 auto;">
-            <input type="hidden" name="command" value="join">
+        <form action="join" method="post" style="max-width: 500px; margin: 0 auto;">
+
             <div class="form-group">
                 <label for="userid">User ID:</label>
                 <input type="text" id="userid" name="userid" required>

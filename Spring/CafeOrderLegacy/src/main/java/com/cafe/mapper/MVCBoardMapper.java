@@ -24,4 +24,6 @@ public interface MVCBoardMapper {
     void delete(Long idx);
 
     void updateVisitCount(Long idx);
+
+    void updateDownCount(Long idx);
 }

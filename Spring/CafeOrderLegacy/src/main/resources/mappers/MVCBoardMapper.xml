@@ -63,6 +63,10 @@
         UPDATE CAFE_MVCBOARD SET visitcount = visitcount + 1 WHERE idx = #{idx}
     </update>
 
+    <update id="updateDownCount">
+        UPDATE CAFE_MVCBOARD SET downcount = downcount + 1 WHERE idx = #{idx}
+    </update>
+
     <delete id="delete">
         DELETE FROM CAFE_MVCBOARD WHERE idx = #{idx}
     </delete>

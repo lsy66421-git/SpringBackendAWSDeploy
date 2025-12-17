@@ -1,7 +1,9 @@
 package com.cafe.controller;
 
 import com.cafe.entity.MVCBoard;
+import com.cafe.entity.Member;
 import com.cafe.mapper.MVCBoardMapper;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import java.util.List;
 public class BoardController {
 
     private final MVCBoardMapper boardMapper;
+    private final String UPLOAD_DIR = "c:\\cafe_upload\\";
 
     @GetMapping("/list")
     public String list(Model model,
@@ -51,71 +54,154 @@ public class BoardController {
     }
 
     @GetMapping("/write")
-    public String writeForm() {
+    public String writeForm(HttpSession session, Model model) {
+        if (session.getAttribute("loginUser") == null) {
+            model.addAttribute("msg", "로그인 후 이용 가능합니다.");
+            model.addAttribute("url", "/member/login");
+            return "common/alert";
+        }
         return "board/Write";
     }
 
     @PostMapping("/write")
-    public String write(MVCBoard board) {
+    public String write(MVCBoard board,
+            @RequestParam(value = "file", required = false) org.springframework.web.multipart.MultipartFile file,
+            HttpSession session) {
+        if (session.getAttribute("loginUser") == null) {
+            return "redirect:/member/login";
+        }
+
+        // File upload handling
+        if (file != null && !file.isEmpty()) {
+            String uploadDir = "c:\\cafe_upload\\";
+            java.io.File dir = new java.io.File(uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String originalFileName = file.getOriginalFilename();
+            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            // Shorten filename: Date + Random(3 digits) + Ext
+            String savedFileName = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date())
+                    + "_" + new java.util.Random().nextInt(100) + ext;
+
+            try {
+                file.transferTo(new java.io.File(uploadDir + savedFileName));
+                board.setOfile(originalFileName);
+                board.setSfile(savedFileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Password is not used, set empty (Mapper will handle default)
+        board.setPass("");
         boardMapper.insert(board);
         return "redirect:/board/list";
     }
 
-    @GetMapping("/pass")
-    public String passForm(@RequestParam("mode") String mode, @RequestParam("idx") Long idx, Model model) {
-        model.addAttribute("mode", mode);
-        model.addAttribute("idx", idx);
-        return "board/pass";
-    }
+    // Removed /pass endpoints
 
-    @PostMapping("/pass")
-    public String checkPass(@RequestParam("idx") Long idx, @RequestParam("mode") String mode,
-            @RequestParam("pass") String pass, Model model) {
+    @GetMapping("/delete")
+    public String delete(@RequestParam("idx") Long idx, HttpSession session, Model model) {
+        Member loginUser = (Member) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/member/login");
+            return "common/alert";
+        }
+
         MVCBoard board = boardMapper.selectById(idx);
-
         if (board == null) {
             model.addAttribute("msg", "게시물이 존재하지 않습니다.");
             model.addAttribute("url", "/board/list");
             return "common/alert";
         }
 
-        if (!board.getPass().equals(pass)) {
-            model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
+        // Check if user is admin or author
+        // Assuming 'admin' userId is "admin" or just checking name match
+        if (!"admin".equals(loginUser.getUserid()) && !loginUser.getName().equals(board.getName())) {
+            model.addAttribute("msg", "본인 또는 관리자만 삭제할 수 있습니다.");
             model.addAttribute("url", "back");
             return "common/alert";
         }
 
-        if ("edit".equals(mode)) {
-            return "redirect:/board/edit?idx=" + idx;
-        } else if ("delete".equals(mode)) {
-            boardMapper.delete(idx);
-            model.addAttribute("msg", "삭제되었습니다.");
-            model.addAttribute("url", "/board/list");
-            return "common/alert";
-        }
-
-        return "redirect:/board/list";
+        boardMapper.delete(idx);
+        model.addAttribute("msg", "삭제되었습니다.");
+        model.addAttribute("url", "/board/list");
+        return "common/alert";
     }
 
     @GetMapping("/edit")
-    public String editForm(@RequestParam("idx") Long idx, Model model) {
+    public String editForm(@RequestParam("idx") Long idx, HttpSession session, Model model) {
+        Member loginUser = (Member) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/member/login");
+            return "common/alert";
+        }
+
         MVCBoard board = boardMapper.selectById(idx);
+        if (board == null) {
+            return "redirect:/board/list";
+        }
+
+        // Auth check
+        if (!"admin".equals(loginUser.getUserid()) && !loginUser.getName().equals(board.getName())) {
+            model.addAttribute("msg", "본인 또는 관리자만 수정할 수 있습니다.");
+            model.addAttribute("url", "back");
+            return "common/alert";
+        }
+
         model.addAttribute("dto", board);
         return "board/edit";
     }
 
     @PostMapping("/edit")
-    public String edit(MVCBoard board) {
-        // In MyBatis/Manual update, we might just update the fields we have in the
-        // form.
-        // Assuming 'board' object has idx populated.
-        // If the form doesn't pass all fields (like visitcount), we should be careful.
-        // Our 'update' SQL updates name, title, content, ofile, sfile.
-        // So we can just pass 'board' directly if those fields are bound.
-        // However, checks for nulls might be needed if not bound.
-        // Let's assume the form binds them correctly or use selectById first?
-        // Legacy 'update' usually just overwrites.
-        // The SQL I wrote: UPDATE ... SET name = #{name}, title = #{title}...
+    public String edit(MVCBoard board,
+            @RequestParam(value = "file", required = false) org.springframework.web.multipart.MultipartFile file,
+            @RequestParam(value = "prevOfile", required = false) String prevOfile,
+            @RequestParam(value = "prevSfile", required = false) String prevSfile,
+            HttpSession session, Model model) {
+
+        Member loginUser = (Member) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/member/login";
+        }
+
+        MVCBoard original = boardMapper.selectById(board.getIdx());
+        if (original == null) {
+            return "redirect:/board/list";
+        }
+
+        if (!"admin".equals(loginUser.getUserid()) && !loginUser.getName().equals(original.getName())) {
+            model.addAttribute("msg", "수정 권한이 없습니다.");
+            model.addAttribute("url", "/board/list");
+            return "common/alert";
+        }
+
+        // Handle File Upload
+        if (file != null && !file.isEmpty()) {
+            try {
+                String originalFileName = file.getOriginalFilename();
+                String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+                // Shorten filename: Date + Random(3 digits) + Ext
+                String savedFileName = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date())
+                        + "_" + new java.util.Random().nextInt(100) + ext;
+
+                file.transferTo(new java.io.File(UPLOAD_DIR + savedFileName));
+
+                board.setOfile(originalFileName);
+                board.setSfile(savedFileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Optionally handle upload failure
+            }
+        } else {
+            // Keep existing file
+            board.setOfile(prevOfile);
+            board.setSfile(prevSfile);
+        }
 
         boardMapper.update(board);
         return "redirect:/board/view?idx=" + board.getIdx();

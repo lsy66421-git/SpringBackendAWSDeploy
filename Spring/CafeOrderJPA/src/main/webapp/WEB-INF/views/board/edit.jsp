@@ -31,51 +31,47 @@
             <jsp:include page="../common/header.jsp" />
             <h2>카페 게시판 - 수정하기(Edit)</h2>
             <form name="writeFrm" method="post" action="${pageContext.request.contextPath}/board/edit"
-                onsubmit="return validateForm(this);">
+                enctype="multipart/form-data" onsubmit="return validateForm(this);">
                 <input type="hidden" name="idx" value="${ dto.idx }" />
-                <input type="hidden" name="prevOfile" value="${ dto.ofile }" />
-                <input type="hidden" name="prevSfile" value="${ dto.sfile }" />
-
                 <table border="1" width="90%">
                     <tr>
                         <td>작성자</td>
                         <td>
-                            <input type="text" name="name" style="width:150px;" value="${ dto.name }" />
+                            <input type="text" name="name" style="width:150px;" value="${ dto.name }" required
+                                readonly />
+                            (이름은 수정 불가)
                         </td>
                     </tr>
                     <tr>
                         <td>제목</td>
                         <td>
-                            <input type="text" name="title" style="width:90%;" value="${ dto.title }" />
+                            <input type="text" name="title" style="width:90%;" value="${ dto.title }" required />
                         </td>
                     </tr>
                     <tr>
                         <td>내용</td>
                         <td>
-                            <textarea name="content" style="width:90%;height:100px;">${ dto.content }</textarea>
+                            <textarea name="content" style="width:90%;height:300px;"
+                                required>${ dto.content }</textarea>
                         </td>
                     </tr>
                     <tr>
                         <td>첨부 파일</td>
                         <td>
-                            <input type="file" name="ofile" />
+                            <c:if test="${ not empty dto.ofile }">
+                                현재 파일: ${ dto.ofile } <br />
+                            </c:if>
+                            <input type="file" name="file" /> (새 파일 업로드 시 교체됨)
                         </td>
                     </tr>
-                    <tr>
-                        <td>저장 경로</td>
-                        <td>
-                            <input type="text" name="savePath" value="C:/cafe_notice_upload" style="width: 300px" />
-                            <br />* 파일을 수정할 경우 저장될 경로입니다.
-                        </td>
-                    </tr>
+
                     <tr>
                         <td colspan="2" align="center">
                             <button type="submit">작성 완료</button>
-                            <button type="reset">RESET</button>
+                            <button type="reset">다시 입력</button>
                             <button type="button"
-                                onclick="location.href='${pageContext.request.contextPath}/board/list';">
-                                목록 바로가기
-                            </button>
+                                onclick="location.href='${pageContext.request.contextPath}/board/list';">목록
+                                보기</button>
                         </td>
                     </tr>
                 </table>

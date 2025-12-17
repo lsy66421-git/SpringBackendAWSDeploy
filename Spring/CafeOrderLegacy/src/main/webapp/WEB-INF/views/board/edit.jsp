@@ -31,7 +31,7 @@
             <jsp:include page="../common/header.jsp" />
             <h2>카페 게시판 - 수정하기(Edit)</h2>
             <form name="writeFrm" method="post" action="${pageContext.request.contextPath}/board/edit"
-                onsubmit="return validateForm(this);">
+                enctype="multipart/form-data" onsubmit="return validateForm(this);">
                 <input type="hidden" name="idx" value="${ dto.idx }" />
                 <input type="hidden" name="prevOfile" value="${ dto.ofile }" />
                 <input type="hidden" name="prevSfile" value="${ dto.sfile }" />
@@ -58,14 +58,10 @@
                     <tr>
                         <td>첨부 파일</td>
                         <td>
-                            <input type="file" name="ofile" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>저장 경로</td>
-                        <td>
-                            <input type="text" name="savePath" value="C:/cafe_notice_upload" style="width: 300px" />
-                            <br />* 파일을 수정할 경우 저장될 경로입니다.
+                            <input type="file" name="file" />
+                            <c:if test="${ not empty dto.ofile }">
+                                <br />현재 파일: ${ dto.ofile }
+                            </c:if>
                         </td>
                     </tr>
                     <tr>
