@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk User Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="login-container">
+            <div class="login-box">
+                <h2 id="form-title">Login</h2>
+
+                <!-- Login Form -->
+                <form id="login-form" action="/api/auth/login" method="POST">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                    <div class="toggle-link" onclick="toggleForm('signup')">Don't have an account? Sign up</div>
+                </form>
+
+                <!-- Signup Form -->
+                <form id="signup-form" style="display: none;">
+                    <div class="input-group">
+                        <label>Name</label>
+                        <input type="text" id="s-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="s-username" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="s-password" required>
+                    </div>
+                    <button type="button" class="btn" onclick="submitSignup()">Sign Up</button>
+                    <div class="toggle-link" onclick="toggleForm('login')">Already have an account? Login</div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm(mode) {
+            if (mode === 'signup') {
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('signup-form').style.display = 'block';
+                document.getElementById('form-title').innerText = 'Sign Up';
+            } else {
+                document.getElementById('login-form').style.display = 'block';
+                document.getElementById('signup-form').style.display = 'none';
+                document.getElementById('form-title').innerText = 'Login';
+            }
+        }
+
+        async function submitSignup() {
+            const name = document.getElementById('s-name').value;
+            const username = document.getElementById('s-username').value;
+            const password = document.getElementById('s-password').value;
+
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, username, password })
+                });
+
+                if (response.ok) {
+                    alert('Signup successful! Please login.');
+                    toggleForm('login');
+                } else {
+                    alert('Signup failed.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error submitting signup');
+            }
+        }
+
+        // Check for error param
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error')) {
+            alert('Login failed. Please check your credentials.');
+        }
+    </script>
+</body>
+
+</html>

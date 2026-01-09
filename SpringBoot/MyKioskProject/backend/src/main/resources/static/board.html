@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Kiosk Notice</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .board-wrapper {
+            padding: 40px;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .board-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .board-table th,
+        .board-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .board-table th {
+            background: #f0f0f0;
+        }
+
+        .modal-form {
+            text-align: left;
+            width: 500px;
+        }
+
+        .modal-form input,
+        .modal-form textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .modal-form textarea {
+            height: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="board-wrapper">
+            <div class="board-header">
+                <h2>공지사항</h2>
+                <div>
+                    <button class="btn" style="width: auto; background: #666;"
+                        onclick="location.href='/kiosk.html'">홈으로</button>
+                    <button class="btn" id="btn-write" style="width: auto; display:none;"
+                        onclick="openWriteModal()">글쓰기</button>
+                    <!-- Write button hidden by default, shown only for Admin -->
+                </div>
+            </div>
+
+            <table class="board-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody id="board-list">
+                    <!-- Loaded by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Write/Edit Modal -->
+    <div class="modal" id="board-modal">
+        <div class="modal-content modal-form">
+            <h3 id="modal-title">글쓰기</h3>
+            <input type="hidden" id="board-id">
+            <label>제목</label>
+            <input type="text" id="board-title">
+            <label>내용</label>
+            <textarea id="board-content"></textarea>
+
+            <label>첨부파일</label>
+            <input type="file" id="board-file" style="margin-bottom: 20px;">
+
+            <button class="btn" onclick="submitBoard()">저장</button>
+            <button class="btn" style="background: #ccc; margin-top: 5px;"
+                onclick="$('#board-modal').hide()">취소</button>
+        </div>
+    </div>
+
+    <!-- Read Modal -->
+    <div class="modal" id="read-modal">
+        <div class="modal-content modal-form">
+            <h3 id="read-title"></h3>
+            <div style="text-align: right; font-size: 0.9em; color: #666; margin-bottom: 10px;">
+                작성자: <span id="read-writer"></span> | <span id="read-date"></span>
+            </div>
+            <div id="read-content"
+                style="min-height: 100px; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; margin-bottom: 15px; white-space: pre-wrap;">
+            </div>
+
+            <div id="read-file-area" style="margin-bottom: 15px;">
+                <!-- Image or File Link -->
+            </div>
+
+            <button class="btn" style="background: #666;" onclick="$('#read-modal').hide()">닫기</button>
+        </div>
+    </div>
+
+    <script>
+        // Get type from URL, default to NOTICE
+        const urlParams = new URLSearchParams(window.location.search);
+        const boardType = urlParams.get('type') || 'NOTICE';
+
+        $(document).ready(function () {
+            // Set Header Title
+            if (boardType === 'INQUIRY') {
+                $('h2').text('문의');
+                document.title = 'Kiosk Inquiry';
+            } else {
+                $('h2').text('공지사항');
+                document.title = 'Kiosk Notice';
+            }
+
+            loadBoard();
+        });
+
+        let currentUserRole = null;
+        let currentUserId = null;
+
+        function checkUser() {
+            return $.get('/api/auth/me', function (user) {
+                currentUserRole = user.role;
+                currentUserId = user.id;
+
+                // Write Button Logic
+                if (boardType === 'NOTICE') {
+                    // Start only Admin
+                    if (currentUserRole === 'ADMIN') {
+                        $('#btn-write').show();
+                    }
+                } else {
+                    // Inquiry: Everyone (Members) can write
+                    $('#btn-write').show();
+                }
+            });
+        }
+
+        async function loadBoard() {
+            try {
+                await checkUser();
+            } catch (e) {
+                console.log("User check failed");
+            }
+
+            $.get(`/api/board?type=${boardType}`, function (data) {
+                const tbody = $('#board-list');
+                tbody.empty();
+                data.forEach(item => {
+                    let dateStr = item.createdAt ? item.createdAt.split('T')[0] : '';
+                    let fileIcon = item.fileName ? '📎' : '';
+
+                    // Manage logic: 
+                    // Notice: Admin only
+                    // Inquiry: Writer or Admin
+                    let manageBtns = '';
+                    let canManage = false;
+
+                    if (currentUserRole === 'ADMIN') canManage = true;
+                    if (boardType === 'INQUIRY' && item.writer && item.writer.id === currentUserId) canManage = true;
+
+                    if (canManage) {
+                        manageBtns = `
+                            <button onclick="editBoard(${item.id}, '${escapeHtml(item.title)}', '${escapeHtml(item.content)}')">수정</button>
+                            <button onclick="deleteBoard(${item.id})">삭제</button>
+                        `;
+                    }
+
+                    tbody.append(`
+                        <tr>
+                            <td>${item.id}</td>
+                            <td onclick="openReadModal(${item.id})" style="cursor:pointer; color:blue; text-decoration:underline;">
+                                ${item.title} ${fileIcon}
+                            </td>
+                            <td>${item.writer ? item.writer.name : 'Unknown'}</td>
+                            <td>${dateStr}</td>
+                            <td>${manageBtns}</td>
+                        </tr>
+                    `);
+                });
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // ... (openReadModal same, but need to pass type? No, id is unique)
+        function openReadModal(id) {
+            $.get(`/api/board?type=${boardType}`, function (data) {
+                const item = data.find(b => b.id === id);
+                if (!item) return;
+                // ... (rest same)
+                $('#read-title').text(item.title);
+                $('#read-writer').text(item.writer ? item.writer.name : 'Unknown');
+                $('#read-date').text(item.createdAt ? item.createdAt.split('T')[0] : '');
+                $('#read-content').text(item.content);
+
+                const fileArea = $('#read-file-area');
+                fileArea.empty();
+
+                if (item.filePath) {
+                    const isImage = item.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/);
+                    if (isImage) {
+                        fileArea.append(`<img src="${item.filePath}" style="max-width:100%; border:1px solid #ccc;">`);
+                    } else {
+                        fileArea.append(`첨부파일: <a href="${item.filePath}" download="${item.fileName}">${item.fileName}</a>`);
+                    }
+                }
+
+                $('#read-modal').css('display', 'flex');
+            });
+        }
+
+        function openWriteModal() {
+            $('#board-id').val('');
+            $('#board-title').val('');
+            $('#board-content').val('');
+            $('#board-file').val('');
+            $('#modal-title').text(boardType === 'NOTICE' ? '공지사항 작성' : '문의 작성');
+            $('#board-modal').css('display', 'flex');
+        }
+
+        function editBoard(id, title, content) {
+            $('#board-id').val(id);
+            $('#board-title').val(title);
+            $('#board-content').val(content);
+            $('#board-file').val('');
+            $('#modal-title').text('글 수정');
+            $('#board-modal').css('display', 'flex');
+        }
+
+        function submitBoard() {
+            const id = $('#board-id').val();
+
+            const formData = new FormData();
+            formData.append('title', $('#board-title').val());
+            formData.append('content', $('#board-content').val());
+            formData.append('type', boardType); // Append Type
+
+            const fileInput = $('#board-file')[0];
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            // ... (submit logic same)
+            const method = 'POST';
+            const url = id ? `/api/board/${id}` : '/api/board';
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function () {
+                    alert('저장되었습니다.');
+                    $('#board-modal').hide();
+                    loadBoard();
+                },
+                error: function (xhr) {
+                    alert('실패: ' + xhr.responseText);
+                }
+            });
+        }
+
+
+
+        function deleteBoard(id) {
+            if (!confirm('삭제하시겠습니까?')) return;
+            $.ajax({
+                url: `/api/board/${id}`,
+                type: 'DELETE',
+                success: function () {
+                    alert('삭제되었습니다.');
+                    loadBoard();
+                },
+                error: function (xhr) {
+                    alert('실패: ' + xhr.responseText);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

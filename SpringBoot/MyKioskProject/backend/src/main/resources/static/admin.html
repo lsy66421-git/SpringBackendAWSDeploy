@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Kiosk Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .admin-wrapper {
+            padding: 40px;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+            /* Fix for padding overflow */
+        }
+
+        .admin-nav {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .admin-nav button {
+            width: auto;
+            background: transparent;
+            color: #333;
+            margin-right: 20px;
+            border-radius: 0;
+        }
+
+        .admin-nav button.active {
+            border-bottom: 3px solid #667eea;
+            font-weight: bold;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="admin-wrapper">
+            <div style="display:flex; justify-content:space-between;">
+                <h2>관리자 페이지</h2>
+                <button class="btn" style="width: auto; background: #666;"
+                    onclick="location.href='/kiosk.html'">홈으로</button>
+            </div>
+
+            <div class="admin-nav">
+                <button id="tab-menu" class="active" onclick="switchTab('menu')">메뉴 관리</button>
+                <button id="tab-members" onclick="switchTab('members')">회원관리</button>
+                <button id="tab-sales" onclick="switchTab('sales')">매출 조회</button>
+                <button id="tab-config" onclick="switchTab('config')">메뉴</button>
+            </div>
+
+            <!-- Menu Configuration (Subscription) -->
+            <div id="section-config" class="section">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>메뉴 설정 (키오스크 노출 메뉴)</h3>
+                    <button class="btn" style="width: auto; background-color:#28a745;"
+                        onclick="saveMenuConfig()">저장하기</button>
+                </div>
+                <div style="display:flex; gap:20px; height:600px;">
+                    <!-- Left: All Menus -->
+                    <div style="flex:1; border:1px solid #ccc; display:flex; flex-direction:column;">
+                        <h4 style="background:#eee; margin:0; padding:10px; text-align:center;">전체 메뉴 (클릭하여 추가)</h4>
+                        <div id="config-all-list" style="flex:1; overflow-y:auto; padding:10px;"></div>
+                    </div>
+                    <!-- Right: My Menus -->
+                    <div style="flex:1; border:1px solid #00008b; display:flex; flex-direction:column;">
+                        <h4 style="background:#00008b; color:white; margin:0; padding:10px; text-align:center;">내 메뉴
+                            (메인화면 표시) - 클릭하여 삭제</h4>
+                        <div id="config-my-list" style="flex:1; overflow-y:auto; padding:10px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Member Management -->
+            <div id="section-members" class="section">
+                <h3>회원 관리</h3>
+                <table class="board-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>이름</th>
+                            <th>전화번호</th>
+                            <th>이메일</th>
+                            <th>주소</th>
+                            <th>가입일</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="member-list">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Menu Management -->
+            <div id="section-menu" class="section active">
+                <h3>메뉴 등록/삭제</h3>
+                <div style="margin-bottom: 20px; border: 1px solid #ccc; padding: 20px;">
+                    <h4>새 메뉴 추가</h4>
+                    <input type="text" id="m-name" placeholder="메뉴명">
+                    <input type="number" id="m-price" placeholder="가격">
+                    <input type="text" id="m-desc" placeholder="설명">
+                    <input type="text" id="m-img" placeholder="이미지 URL (예: /images/burger.jpg)">
+                    <select id="m-category">
+                        <!-- Loaded via JS -->
+                    </select>
+                    <button class="btn" style="width: auto;" onclick="addMenu()">등록</button>
+                </div>
+                <!-- Menu List (Simplified) -->
+                <div id="admin-menu-list"></div>
+            </div>
+
+            <!-- Sales Management -->
+            <div id="section-sales" class="section">
+                <h3>매출 조회</h3>
+                <p>총 매출: <strong id="total-sales">0원</strong></p>
+                <table class="board-table">
+                    <thead>
+                        <tr>
+                            <th>주문번호</th>
+                            <th>일시</th>
+                            <th>금액</th>
+                            <th>상태</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sales-list"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            // Check current user role
+            $.get('/api/auth/me', function (user) {
+                if (user.role === 'ADMIN') {
+                    // Admin: Load everything
+                    loadCategories();
+                    loadMenusForAdmin();
+                    loadSales();
+                    loadMembers();
+                } else {
+                    // Non-Admin (Member/Owner): Hide Admin tabs
+                    $('#tab-menu').hide();
+                    $('#tab-members').hide();
+
+                    // Load only member-accessible data
+                    loadSales();
+                    // loadCategories is used by addMenu (Admin feature), seemingly not needed for config?
+                    // actually config uses global allMenus, separate load.
+
+                    // Force switch to 'config' or 'sales' if trying to access hidden tabs
+                    const currentTab = new URLSearchParams(window.location.search).get('tab');
+                    if (!currentTab || currentTab === 'menu' || currentTab === 'members') {
+                        switchTab('config');
+                    }
+                }
+
+                // Check for tab param (override default if valid)
+                const urlParams = new URLSearchParams(window.location.search);
+                const tab = urlParams.get('tab');
+                if (tab) {
+                    if (user.role !== 'ADMIN' && (tab === 'menu' || tab === 'members')) {
+                        // Restricted, do nothing (handled above)
+                    } else {
+                        switchTab(tab);
+                    }
+                }
+            }).fail(function () {
+                alert('로그인이 필요합니다.');
+                location.href = '/index.html';
+            });
+        });
+
+        function loadMenusForAdmin() {
+            $.get('/api/admin/menu', function (menus) {
+                const list = $('#admin-menu-list');
+                list.empty();
+                if (menus.length === 0) {
+                    list.append('<p>등록된 메뉴가 없습니다.</p>');
+                    return;
+                }
+                const table = $(`
+                    <table class="board-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>이미지</th>
+                                <th>메뉴명</th>
+                                <th>가격</th>
+                                <th>카테고리</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                `);
+                const tbody = table.find('tbody');
+                menus.forEach(m => {
+                    tbody.append(`
+                        <tr>
+                            <td>${m.id}</td>
+                            <td><img src="${m.imageUrl || ''}" style="width:50px;height:50px;object-fit:cover;"></td>
+                            <td>${m.name}</td>
+                            <td>${m.price.toLocaleString()}원</td>
+                            <td>${m.category ? m.category.name : '-'}</td>
+                            <td>
+                                <button class="btn" style="width:auto; padding:5px 10px; background-color:#dc3545;" onclick="deleteMenu(${m.id})">삭제</button>
+                            </td>
+                        </tr>
+                    `);
+                });
+                list.append(table);
+            });
+        }
+
+        function loadMembers() {
+            $.get('/api/admin/members/pending', function (members) {
+                const tbody = $('#member-list');
+                tbody.empty();
+                if (members.length === 0) {
+                    tbody.append('<tr><td colspan="7" style="text-align:center;">회원이 없습니다.</td></tr>');
+                    return;
+                }
+                members.forEach(m => {
+                    let actions = '';
+                    // Treat null/undefined/0 as Pending
+                    if (!m.isApproved || m.isApproved === 0) {
+                        actions = `
+                            <button class="btn" style="width:auto; padding:5px 10px; background-color:#28a745; margin-right:5px;" onclick="approveMember(${m.id})">승인</button>
+                            <button class="btn" style="width:auto; padding:5px 10px; background-color:#ffc107; color:#000; margin-right:5px;" onclick="holdMember(${m.id})">보류</button>
+                            <button class="btn" style="width:auto; padding:5px 10px; background-color:#dc3545;" onclick="cancelMember(${m.id})">취소</button>
+                        `;
+                    } else {
+                        // For approved members, show password reset
+                        actions = `
+                            <button class="btn" style="width:auto; padding:5px 10px; background-color:#17a2b8; margin-right:5px;" onclick="resetPassword(${m.id})">비밀번호 초기화</button>
+                        `;
+                    }
+                    tbody.append(`
+                        <tr>
+                            <td>${m.username}</td>
+                            <td>${m.name}</td>
+                            <td>${m.phoneNumber || '-'}</td>
+                            <td>${m.email || '-'}</td>
+                            <td>${m.address || '-'}</td>
+                            <td>${m.createdAt ? m.createdAt.split('T')[0] : '-'}</td>
+                            <td>${actions}</td>
+                        </tr>
+                    `);
+                });
+            });
+        }
+
+        function approveMember(id) {
+            if (!confirm('승인하시겠습니까?')) return;
+            $.post(`/api/admin/members/${id}/approve`, function () {
+                alert('승인되었습니다.');
+                loadMembers();
+            }).fail(function () {
+                alert('오류가 발생했습니다.');
+            });
+        }
+
+        function holdMember(id) {
+            if (!confirm('보류하시겠습니까?')) return;
+            $.post(`/api/admin/members/${id}/hold`, function () {
+                alert('보류 처리되었습니다.');
+                loadMembers();
+            }).fail(function () {
+                alert('오류가 발생했습니다.');
+            });
+        }
+
+        function cancelMember(id) {
+            if (!confirm('정말 취소(삭제) 하시겠습니까?')) return;
+            $.ajax({
+                url: `/api/admin/members/${id}`,
+                type: 'DELETE',
+                success: function () {
+                    alert('삭제되었습니다.');
+                    loadMembers();
+                },
+                error: function () {
+                    alert('오류가 발생했습니다.');
+                }
+            });
+        }
+
+        function resetPassword(id) {
+            if (!confirm('정말 비밀번호를 1234로 초기화하시겠습니까?')) return;
+            $.post(`/api/admin/members/${id}/reset-password`, function () {
+                alert('비밀번호가 1234로 초기화되었습니다.');
+            }).fail(function () {
+                alert('오류가 발생했습니다.');
+            });
+        }
+
+        function switchTab(tab) {
+            $('.section').removeClass('active');
+            $('.admin-nav button').removeClass('active');
+            $('#section-' + tab).addClass('active');
+
+            // Set active button by ID
+            if (tab === 'menu') $('#tab-menu').addClass('active');
+            if (tab === 'members') $('#tab-members').addClass('active');
+            if (tab === 'sales') $('#tab-sales').addClass('active');
+            if (tab === 'config') $('#tab-config').addClass('active');
+
+            if (tab === 'config') {
+                loadConfigData();
+            }
+        }
+
+        function loadCategories() {
+            $.get('/api/categories', function (cats) {
+                const sel = $('#m-category');
+                sel.empty();
+                cats.forEach(c => {
+                    sel.append(`<option value="${c.id}">${c.name}</option>`);
+                });
+            });
+        }
+
+        function addMenu() {
+            const data = {
+                name: $('#m-name').val(),
+                price: $('#m-price').val(),
+                description: $('#m-desc').val(),
+                imageUrl: $('#m-img').val(),
+                categoryId: $('#m-category').val()
+            };
+
+            $.ajax({
+                url: '/api/admin/menu',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function () {
+                    alert('메뉴가 등록되었습니다.');
+                    $('#m-name').val('');
+                    $('#m-price').val('');
+                    loadMenusForAdmin();
+                },
+                error: function (xhr) {
+                    alert('오류: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function deleteMenu(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            $.ajax({
+                url: `/api/admin/menu/${id}`,
+                type: 'DELETE',
+                success: function () {
+                    alert('메뉴가 삭제되었습니다.');
+                    loadMenusForAdmin();
+                },
+                error: function () {
+                    alert('삭제에 실패했습니다.');
+                }
+            });
+        }
+
+        function loadSales() {
+            $.get('/api/sales/monthly', function (data) {
+                const container = $('#section-sales');
+                container.find('h3').text('월별 매출 조회 (회원별)');
+
+                // Update total
+                $('#total-sales').text(data.grandTotal.toLocaleString() + '원');
+
+                const tableContainer = $('#sales-list').parent(); // The table element
+                $('#sales-list').empty(); // Clear tbody
+
+                // We need to reconstruct the table headers as they are dynamic
+                const thead = tableContainer.find('thead');
+                thead.empty();
+
+                let headerHtml = '<tr><th>회원명 / 월</th>';
+                data.months.forEach(m => {
+                    headerHtml += `<th>${m}</th>`;
+                });
+                headerHtml += '<th>합계</th></tr>';
+                thead.append(headerHtml);
+
+                const tbody = $('#sales-list');
+
+                // Rows
+                data.rows.forEach(row => {
+                    let tr = `<tr><td>${row.menuName}</td>`; // "menuName" holds Member Name for admins
+                    data.months.forEach(m => {
+                        let val = row[m] || 0;
+                        tr += `<td>${val.toLocaleString()}원</td>`;
+                    });
+                    tr += `<td style="font-weight:bold;">${row.total.toLocaleString()}원</td></tr>`;
+                    tbody.append(tr);
+                });
+
+                // Footer (Totals)
+                let footerHtml = `<tr style="background-color:#f0f0f0; font-weight:bold;"><td>월별 합계</td>`;
+                data.months.forEach(m => {
+                    footerHtml += `<td>${(data.monthTotals[m] || 0).toLocaleString()}원</td>`;
+                });
+                footerHtml += `<td>${data.grandTotal.toLocaleString()}원</td></tr>`;
+                tbody.append(footerHtml);
+            }).fail(function () {
+                $('#sales-list').html('<tr><td colspan="5">데이터를 불러오는데 실패했습니다.</td></tr>');
+            });
+        }
+        // --- Config Section Logic ---
+
+        let allMenusGlobal = [];
+        let myMenuIds = new Set();
+
+        function loadConfigData() {
+            // 1. Load ALL available menus
+            $.get('/api/menus/all', function (allMenus) {
+                allMenusGlobal = allMenus;
+
+                // 2. Load MY currently subscribed menus (using existing public API filtered by user)
+                $.get('/api/menus', function (myMenus) {
+                    myMenuIds = new Set(myMenus.map(m => m.id));
+                    renderConfigLists();
+                });
+            });
+        }
+
+        function renderConfigLists() {
+            const allContainer = $('#config-all-list');
+            const myContainer = $('#config-my-list');
+
+            allContainer.empty();
+            myContainer.empty();
+
+            allMenusGlobal.forEach(menu => {
+                const itemHtml = `
+                    <div class="config-item" onclick="toggleMenuSelection(${menu.id})" style="display:flex; align-items:center; padding:5px; border-bottom:1px solid #eee; cursor:pointer;">
+                        <img src="${menu.imageUrl || ''}" style="width:40px; height:40px; object-fit:cover; margin-right:10px; border-radius:5px;">
+                        <div style="flex:1;">
+                            <div style="font-weight:bold;">${menu.name}</div>
+                            <div style="font-size:0.8em; color:#666;">${menu.price.toLocaleString()}원</div>
+                        </div>
+                    </div>
+                `;
+
+                if (myMenuIds.has(menu.id)) {
+                    // It's in "My Menus"
+                    myContainer.append(itemHtml);
+                } else {
+                    // It's in "Available Menus"
+                    allContainer.append(itemHtml);
+                }
+            });
+        }
+
+        function toggleMenuSelection(id) {
+            if (myMenuIds.has(id)) {
+                myMenuIds.delete(id);
+            } else {
+                myMenuIds.add(id);
+            }
+            renderConfigLists();
+        }
+
+        function saveMenuConfig() {
+            const selectedIds = Array.from(myMenuIds);
+            $.ajax({
+                url: '/api/menus/subscribe',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedIds),
+                success: function () {
+                    alert('메뉴 설정이 저장되었습니다.');
+                },
+                error: function () {
+                    alert('저장에 실패했습니다.');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
