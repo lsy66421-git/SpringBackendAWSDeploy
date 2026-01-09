@@ -9,8 +9,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Map /uploads/** URL to local file system C:/MyKioskProject/uploads/
+        // Map /uploads/** URL to local file system C:/upload/
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///C:/MyKioskProject/uploads/");
+                .addResourceLocations("file:///C:/upload/");
     }
 }

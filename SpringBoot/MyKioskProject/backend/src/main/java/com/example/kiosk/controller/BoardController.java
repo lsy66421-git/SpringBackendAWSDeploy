@@ -69,7 +69,7 @@ public class BoardController {
 
         if (file != null && !file.isEmpty()) {
             try {
-                String uploadDir = "C:/MyKioskProject/uploads/";
+                String uploadDir = "C:/upload/";
                 java.io.File dir = new java.io.File(uploadDir);
                 if (!dir.exists())
                     dir.mkdirs();
@@ -133,7 +133,7 @@ public class BoardController {
             // File Update Logic
             if (file != null && !file.isEmpty()) {
                 try {
-                    String uploadDir = "C:/MyKioskProject/uploads/";
+                    String uploadDir = "C:/upload/";
                     java.io.File dir = new java.io.File(uploadDir);
                     if (!dir.exists())
                         dir.mkdirs();
