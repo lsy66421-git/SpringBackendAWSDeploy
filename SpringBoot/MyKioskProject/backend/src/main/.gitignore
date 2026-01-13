@@ -40,4 +40,4 @@ out/
 *.md
 
 # Frontend Source Ignore (백엔드 브랜치용)
-/backend/src/main/resources       <-- 사용자님의 실제 프론트엔드 폴더명
+resources/     <-- 사용자님의 실제 프론트엔드 폴더명
