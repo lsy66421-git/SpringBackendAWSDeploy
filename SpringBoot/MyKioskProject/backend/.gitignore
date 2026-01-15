@@ -39,10 +39,3 @@ out/
 *.txt
 *.md
 
-# Frontend Source Ignore (백엔드 브랜치용)
-/backend/src/main/resources
-
-### Large Files (Distribution) ###
-MyKioskSetup.exe
-jre/
-backend/target/
